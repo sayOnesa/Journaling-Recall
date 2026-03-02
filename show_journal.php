@@ -1,30 +1,42 @@
 <?php
 require_once './index.php';
 
-require_login();
-
-$user_id = $_SESSION['user_id'];
+// --- CORS Configuration ---
 $frontend_origin = "https://recall-lnrz.onrender.com";
 
 header("Access-Control-Allow-Origin: $frontend_origin");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
 
+// --- Handle preflight OPTIONS ---
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+// --- Ensure user is logged in ---
+require_login();
+
+$user_id = $_SESSION['user_id'];
+
 try {
+    // Connect to the database
     $connection = connect_to_database($env);
 
     $sql = "
-    SELECT 
-        j.id,
-        j.title,
-        DATE_FORMAT(STR_TO_DATE(j.created_at, '%m-%d-%Y'), '%Y-%m-%d') AS date,
-        GROUP_CONCAT(t.tag SEPARATOR ', ') AS tags
-    FROM Journals AS j
-    LEFT JOIN Tags AS t ON j.id = t.journal_id
-    WHERE j.user_id = ?
-    GROUP BY j.id
-    ORDER BY j.created_at DESC
-";
+        SELECT 
+            j.id,
+            j.title,
+            DATE_FORMAT(STR_TO_DATE(j.created_at, '%m-%d-%Y'), '%Y-%m-%d') AS date,
+            GROUP_CONCAT(t.tag SEPARATOR ', ') AS tags
+        FROM Journals AS j
+        LEFT JOIN Tags AS t ON j.id = t.journal_id
+        WHERE j.user_id = ?
+        GROUP BY j.id
+        ORDER BY j.created_at DESC
+    ";
 
     $stmt = $connection->prepare($sql);
     $stmt->bind_param("i", $user_id);
@@ -45,7 +57,10 @@ try {
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Server error: " . $e->getMessage()
+    ]);
     exit();
 }
 ?>
