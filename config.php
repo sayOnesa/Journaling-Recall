@@ -6,10 +6,12 @@ $env = parse_ini_file("./config.ini");
 
 // Base configure for the HTTP header sent in HTTP responses to clients 
 header("Content-Type: application/json; charset=utf-8");
-header("Access-Control-Allow-Origin: https://aptitude.cse.buffalo.edu");
+
+header("Access-Control-Allow-Origin: https://recall-lnrz.onrender.com");
+header("Access-Control-Allow-Credentials: true");
+
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Access-Control-Allow-Credentials: true");
 header("X-Content-Type-Options: nosniff");
 header(header: "X-Frame-Options: DENY");
 header("Content-Security-Policy: default-src 'self'");
@@ -25,8 +27,8 @@ ini_set('session.use_strict_mode', 1);
 
 session_set_cookie_params([
     'lifetime' => 1800,
-    'domain' => 'aptitude.cse.buffalo.edu',
-    'path' => '/CSE442/2025-Fall/cse-442g/',
+    'domain' => 'recall-lnrz.onrender.com',
+    'path' => '/',
     'secure' => true,
     'httponly' => true,
 ]);
