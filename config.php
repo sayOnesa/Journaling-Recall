@@ -34,10 +34,10 @@ ini_set('session.use_strict_mode', 1);
 // Set session cookie parameters
 session_set_cookie_params([
     'lifetime' => 1800,
-    'domain' => 'recall-lnrz.onrender.com', // make sure this matches your frontend domain
-    'path' => '/',
-    'secure' => true,
-    'httponly' => true,
+    'path' => '/',                  // cookie valid site-wide
+    'secure' => true,               // HTTPS only
+    'httponly' => true,             // JS cannot read
+    'samesite' => 'None'            // allows cross-site requests
 ]);
 
 if (session_status() === PHP_SESSION_NONE) {
