@@ -7,6 +7,18 @@
 
 require_once "./config.php";
 
+function api_error($message, $status = 500) {
+    http_response_code($status);
+    header('Content-Type: application/json');
+
+    echo json_encode([
+        "success" => false,
+        "error" => $message
+    ]);
+
+    exit;
+}
+
 
 /**
  * Finds if an element matching $value already exists in column $field of a connected
@@ -23,18 +35,18 @@ require_once "./config.php";
 function element_in_table($connection, $sql, $bindings, $values) {
     $statement = $connection->prepare($sql);
     if(!$statement) {
-        die("Error preparing SQL statement: " . $connection->error);
+        api_error("Error preparing SQL statement: " . $connection->error);
     }
 
     $statement->bind_param($bindings, ...$values);
     if(!$statement->execute()) {
-        die("Error executing SQL query");
+        api_error("Error executing SQL query" . $connection->error);
     }
 
     $result = $statement->get_result();
     $statement->close();
     if(!$result) {
-        die("Error getting result");
+        api_error("Error getting result" . $connection->error);
     }
 
     if($result->num_rows > 0) {
@@ -100,18 +112,18 @@ function get_rows_from_table($connection, $sql, $bindings, $values) {
 function get_id_from_table($connection, $table, $field, $value) {
     $statement = $connection->prepare("SELECT id FROM $table WHERE $field = ? LIMIT 1");
     if(!$statement) {
-        die("Error preparing SQL statement: " . $connection->error);
+        api_error("Error preparing SQL statement: " . $connection->error);
     }
 
     $statement->bind_param("s", $value);
     if(!$statement->execute()) {
-        die("Error executing SQL query");
+        api_error("Error executing SQL query" . $connection->error);
     }
 
     $result = $statement->get_result();
     $statement->close();
     if(!$result) {
-        die("Error getting result");
+        api_error("Error getting result" . $connection->error);
     }
 
     if($result->num_rows > 0) {
@@ -131,12 +143,12 @@ function get_id_from_table($connection, $table, $field, $value) {
 function remove_element_from_table($connection, $table, $field, $value) {
     $statement = $connection->prepare("DELETE FROM $table WHERE $field = ?");
     if(!$statement) {
-        die("Error preparing SQL statement: " . $connection->error);
+        api_error("Error preparing SQL statement: " . $connection->error);
     }
 
     $statement->bind_param("i", $value);
     if(!$statement->execute()) {
-        die("Error executing SQL query");
+        api_error("Error executing SQL query" . $connection->error);
     }
 
    $statement->close();
@@ -162,7 +174,7 @@ function connect_to_database($env) {
 
     // Check if we connected to the database successfully
     if($mysqli->connect_error) {
-        die("Error connecting to database: " . $mysqli->connect_error);
+        api_error("Error connecting to database: " . $mysqli->connect_error);
     }
     
     return $mysqli;
