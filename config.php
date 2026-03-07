@@ -8,13 +8,13 @@ $env = parse_ini_file("./config.ini");
 header("Content-Type: application/json; charset=utf-8");
 
 // Specify the frontend origin here
-$frontend_origin = "https://recall-lnrz.onrender.com";
+$frontend_origin = "https://lindseyxiao.com";
 
 // CORS headers
-// header("Access-Control-Allow-Origin: $frontend_origin");
-// header("Access-Control-Allow-Credentials: true");
-// header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-// header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Origin: $frontend_origin");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
 // // Security headers
 // header("X-Content-Type-Options: nosniff");
