@@ -1,16 +1,7 @@
 <?php
 
-$frontend_origin = "https://recall-lnrz.onrender.com";
-
 require_once "./index.php";
-header("Content-Type: application/json; charset=utf-8");
-header("Access-Control-Allow-Origin: $frontend_origin");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Access-Control-Allow-Credentials: true");
-header("X-Content-Type-Options: nosniff");
-header("X-Frame-Options: DENY");
-header("Content-Security-Policy: default-src 'self'");
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
