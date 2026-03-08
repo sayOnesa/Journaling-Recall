@@ -2,13 +2,6 @@
 
 require_once "./index.php";
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
-
-session_start();
-
 $data = json_decode(file_get_contents("php://input"), true);
 if ($data['token'] != $_SESSION['csrf_token']) {
     echo json_encode([
